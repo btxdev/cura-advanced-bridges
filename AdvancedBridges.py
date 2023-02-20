@@ -62,7 +62,7 @@ class AdvancedBridges(Script):
                 },
                 "play_tone":
                 {
-                    "label": "Включить звук",
+                    "label": "Включить звук при паузах",
                     "description": "Издавать звук перед каждым мостом",
                     "type": "bool",
                     "default_value": true
@@ -170,7 +170,7 @@ class AdvancedBridges(Script):
                 },
                 "retract_value":
                 {
-                    "label": "Величина отката в начале моста",
+                    "label": "Величина отката перед слоем",
                     "description": "Длина нити материала, которая будет извлечена во время отката",
                     "type": "float",
                     "unit": "mm",
@@ -181,7 +181,7 @@ class AdvancedBridges(Script):
                 },
                 "small_retract_value":
                 {
-                    "label": "Величина отката при каждой экструзии",
+                    "label": "Величина отката при паузе",
                     "description": "Длина нити материала, которая будет извлечена во время отката",
                     "type": "float",
                     "unit": "mm",
