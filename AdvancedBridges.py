@@ -260,6 +260,8 @@ class AdvancedBridges(Script):
 
                         if prop_set_speed or prop_mul_speed:
                             new_f_instruction = "F{:.0f}".format(new_F)
+                        else:
+                            new_f_instruction = old_f_instruction
 
                         # FLOW
                         old_e_instruction = "E" + str(searchE.group(1))
@@ -274,6 +276,8 @@ class AdvancedBridges(Script):
 
                         if prop_set_flow or prop_mul_flow:
                             new_e_instruction = "E{:.5f}".format(new_E)
+                        else:
+                            new_e_instruction = old_e_instruction
 
                         # APPLY
                         # set extruder to relative
