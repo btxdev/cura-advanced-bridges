@@ -277,6 +277,8 @@ class AdvancedBridges(Script):
                         # set extruder to relative
                         lines[line_index] += "\nM83 ; set extruder to relative"
                         # retract
+                        if prop_do_pauses:
+                            lines[line_index] += "\nG1 F2700 E-{:.5f} ; SMALL RETRACT".format(0.5)
                         if prop_use_retract and not retract_used:
                             lines[line_index] += "\nG1 F2700 E-{:.5f} ; RETRACT".format(prop_retract_value)
                             retract_used = True
