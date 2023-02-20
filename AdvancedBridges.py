@@ -259,7 +259,7 @@ class AdvancedBridges(Script):
                             new_F = current_F * prop_mul_speed_k
 
                         if prop_set_speed or prop_mul_speed:
-                        new_f_instruction = "F{:.0f}".format(new_F)
+                            new_f_instruction = "F{:.0f}".format(new_F)
 
                         # FLOW
                         old_e_instruction = "E" + str(searchE.group(1))
