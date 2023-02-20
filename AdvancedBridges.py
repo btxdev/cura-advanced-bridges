@@ -116,7 +116,7 @@ class AdvancedBridges(Script):
                 },
                 "mul_speed_k":
                 {
-                    "label": "Коэффициент подачи",
+                    "label": "Коэффициент скорости",
                     "description": "Скорость печати мостов будет умножена на указанное значение",
                     "type": "float",
                     "unit": "%",
@@ -258,6 +258,7 @@ class AdvancedBridges(Script):
                         if prop_mul_speed:
                             new_F = current_F * prop_mul_speed_k
 
+                        if prop_set_speed or prop_mul_speed:
                         new_f_instruction = "F{:.0f}".format(new_F)
 
                         # FLOW
@@ -271,7 +272,8 @@ class AdvancedBridges(Script):
                             delta_E = current_E - previous_E
                             new_E = delta_E * prop_mul_flow_k
 
-                        new_e_instruction = "E{:.5f}".format(new_E)
+                        if prop_set_flow or prop_mul_flow:
+                            new_e_instruction = "E{:.5f}".format(new_E)
 
                         # APPLY
                         # set extruder to relative
