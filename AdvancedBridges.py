@@ -13,7 +13,7 @@ from UM.Logger import Logger
 from UM.Application import Application
 import re
 
-__version__ = '2.3'
+__version__ = '2.4'
 
 def is_begin_bridge(line: str) -> bool:
     return line.startswith(";BRIDGE")
@@ -152,7 +152,7 @@ class AdvancedBridges(Script):
                 },
                 "mul_flow_k":
                 {
-                    "label": "Коэффециент потока",
+                    "label": "Коэффициент потока",
                     "description": "Поток печати мостов будет умножен на указанное значение",
                     "type": "float",
                     "unit": "%",
@@ -170,14 +170,25 @@ class AdvancedBridges(Script):
                 },
                 "retract_value":
                 {
-                    "label": "Величина отката",
+                    "label": "Величина отката в начале моста",
                     "description": "Длина нити материала, которая будет извлечена во время отката",
                     "type": "float",
                     "unit": "mm",
-                    "default_value": 4,
+                    "default_value": 1,
                     "minimum_value": 0,
                     "maximum_value": 20,
                     "maximum_value_warning": 10
+                },
+                "small_retract_value":
+                {
+                    "label": "Величина отката при каждой экструзии",
+                    "description": "Длина нити материала, которая будет извлечена во время отката",
+                    "type": "float",
+                    "unit": "mm",
+                    "default_value": 0.3,
+                    "minimum_value": 0,
+                    "maximum_value": 10,
+                    "maximum_value_warning": 5
                 }
             }
         }"""
@@ -208,6 +219,7 @@ class AdvancedBridges(Script):
 
         prop_use_retract = bool(self.getSettingValueByKey("use_retract"))
         prop_retract_value = float(self.getSettingValueByKey("retract_value"))
+        prop_small_retract_value = float(self.getSettingValueByKey("small_retract_value"))
 
         # pauses and tone
         delay_instruction = ""
@@ -289,7 +301,7 @@ class AdvancedBridges(Script):
                         lines[line_index] += "\nM83 ; set extruder to relative"
                         # retract
                         if prop_do_pauses:
-                            lines[line_index] += "\nG1 F2700 E-{:.5f} ; SMALL RETRACT".format(0.5)
+                            lines[line_index] += "\nG1 F2700 E-{:.5f} ; SMALL RETRACT".format(prop_small_retract_value)
                         if prop_use_retract and not retract_used:
                             lines[line_index] += "\nG1 F2700 E-{:.5f} ; RETRACT".format(prop_retract_value)
                             retract_used = True
