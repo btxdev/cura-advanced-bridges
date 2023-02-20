@@ -201,6 +201,11 @@ class AdvancedBridges(Script):
         prop_mul_flow = bool(self.getSettingValueByKey("mul_flow"))
         prop_mul_flow_k = float(self.getSettingValueByKey("mul_flow_k")) / 100
 
+        # kostyle
+        if not prop_set_flow and not prop_mul_flow:
+            prop_mul_flow = True
+            prop_mul_flow_k = 1
+
         prop_use_retract = bool(self.getSettingValueByKey("use_retract"))
         prop_retract_value = float(self.getSettingValueByKey("retract_value"))
 
