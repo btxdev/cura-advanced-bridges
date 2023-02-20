@@ -13,7 +13,7 @@ from UM.Logger import Logger
 from UM.Application import Application
 import re
 
-__version__ = '2.2'
+__version__ = '2.3'
 
 def is_begin_bridge(line: str) -> bool:
     return line.startswith(";BRIDGE")
@@ -148,7 +148,7 @@ class AdvancedBridges(Script):
                     "label": "Умножить поток",
                     "description": "Умножить параметр G1 E[]",
                     "type": "bool",
-                    "default_value": true
+                    "default_value": false
                 },
                 "mul_flow_k":
                 {
@@ -156,7 +156,7 @@ class AdvancedBridges(Script):
                     "description": "Поток печати мостов будет умножен на указанное значение",
                     "type": "float",
                     "unit": "%",
-                    "default_value": 50,
+                    "default_value": 100,
                     "minimum_value": 1,
                     "maximum_value": 100,
                     "maximum_value_warning": 101
@@ -217,6 +217,7 @@ class AdvancedBridges(Script):
 
         for layer_index, layer in enumerate(data):
             is_a_bridge = False
+            retract_used = False
             current_type = 'initial'
             
             lines = layer.split("\n")
@@ -231,6 +232,7 @@ class AdvancedBridges(Script):
                     if is_a_bridge:
                         lines[line_index] += "\n;END_BRIDGE"
                     is_a_bridge = False
+                    retract_used = False
                 
                 if get_type(line) != 'none':
                     current_type = get_type(line)
@@ -275,8 +277,9 @@ class AdvancedBridges(Script):
                         # set extruder to relative
                         lines[line_index] += "\nM83 ; set extruder to relative"
                         # retract
-                        if prop_use_retract:
-                            lines[line_index] += "\n G1 F2700 E-{:.5f} ; RETRACT".format(prop_retract_value)
+                        if prop_use_retract and not retract_used:
+                            lines[line_index] += "\nG1 F2700 E-{:.5f} ; RETRACT".format(prop_retract_value)
+                            retract_used = True
                         # set flow
                         lines[line_index] += "\n" + line[:].replace(old_f_instruction, new_f_instruction).replace(old_e_instruction, new_e_instruction) + " ; FLOW CHANGED"
                         # set extruder to absolute
