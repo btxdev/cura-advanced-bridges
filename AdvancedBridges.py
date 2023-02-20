@@ -13,7 +13,7 @@ from UM.Logger import Logger
 from UM.Application import Application
 import re
 
-__version__ = '2.1'
+__version__ = '2.2'
 
 def is_begin_bridge(line: str) -> bool:
     return line.startswith(";BRIDGE")
@@ -222,18 +222,14 @@ class AdvancedBridges(Script):
             lines = layer.split("\n")
             for line_index, line in enumerate(lines):
 
-                # new_line = line[line_index]
-
                 if is_begin_bridge(line):
                     if not is_a_bridge:
                         lines[line_index] += "\n;START_BRIDGE"
-                        # new_line += "\n;START_BRIDGE"
                     is_a_bridge = True
 
                 if is_end_bridge(line):
                     if is_a_bridge:
                         lines[line_index] += "\n;END_BRIDGE"
-                        # new_line += "\n;END_BRIDGE"
                     is_a_bridge = False
                 
                 if get_type(line) != 'none':
@@ -243,16 +239,12 @@ class AdvancedBridges(Script):
 
                 # change speed
                 if is_a_bridge and target_type and is_extrusion_line(line):
-                    # new_line = ""
                     lines[line_index] = ""
                     # pauses
-                    # new_line += delay_instruction
                     lines[line_index] += delay_instruction
                     # extrusion
                     searchF = re.search(r"F(\d*\.?\d*)", line)
                     searchE = re.search(r"E(\d*\.?\d*)", line)
-                    searchX = re.search(r"X(\d*\.?\d*)", line)
-                    searchY = re.search(r"Y(\d*\.?\d*)", line)
                     if searchF and searchE:
                         # SPEED
                         old_f_instruction = "F" + str(searchF.group(1))
@@ -280,31 +272,18 @@ class AdvancedBridges(Script):
                         new_e_instruction = "E{:.5f}".format(new_E)
 
                         # APPLY
-                        # new_line = ""
                         # set extruder to relative
                         lines[line_index] += "\nM83 ; set extruder to relative"
-                        # new_line += "\nM83 ; set extruder to relative"
                         # set flow
-                        # g1_pos = lines[line_index].find("G1")
-                        # g1_end = lines[line_index].find("\n", g1_pos)
-                        # lines[line_index]
                         lines[line_index] += "\n" + line[:].replace(old_f_instruction, new_f_instruction).replace(old_e_instruction, new_e_instruction) + " ; FLOW CHANGED"
-                        # new_line += lines[line_index][:].replace(old_f_instruction, new_f_instruction).replace(old_e_instruction, new_e_instruction) + " ; FLOW CHANGED"
-                        # lines[line_index] += "G1 {} {} {} {} ; FLOW CHANGED".format(new_f_instruction, searchX, searchY, new_e_instruction)
-                        # new_line += "G1 {} {} {} {} ; FLOW CHANGED".format(new_f_instruction, searchX, searchY, new_e_instruction)
                         # set extruder to absolute
                         lines[line_index] += "\nM82 ; set extruder to absolute"
-                        # new_line += "\nM82 ; set extruder to absolute"
                         # set extruder position
                         lines[line_index] += "\nG92 {} ; set extruder position".format(old_e_instruction)
-                        # new_line += "\nG92 {} ; set extruder position".format(old_e_instruction)
 
                 # save last extruder position
                 if is_extrusion_line(line):
                     previous_E = float(re.search(r"E(\d*\.?\d*)", line).group(1)[1:])
-
-                # lines[line_index] = new_line
-
                         
             result = "\n".join(lines)
             data[layer_index] = result
