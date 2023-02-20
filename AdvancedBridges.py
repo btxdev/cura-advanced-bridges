@@ -274,6 +274,9 @@ class AdvancedBridges(Script):
                         # APPLY
                         # set extruder to relative
                         lines[line_index] += "\nM83 ; set extruder to relative"
+                        # retract
+                        if prop_use_retract:
+                            lines[line_index] += "\n G1 F2700 E-{:.5f} ; RETRACT".format(prop_retract_value)
                         # set flow
                         lines[line_index] += "\n" + line[:].replace(old_f_instruction, new_f_instruction).replace(old_e_instruction, new_e_instruction) + " ; FLOW CHANGED"
                         # set extruder to absolute
